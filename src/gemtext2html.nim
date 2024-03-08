@@ -21,7 +21,7 @@ proc convert*(gemtext: string): string =
     ## Generate HTML description using `nextParagraph` and `status` (which describes how the elements of `nextParagraph` should be treated as) and push it to `content`.
     ## The elements of `nextParagraph` are wrapped with proper HTML tag.
     if parser.kind == status:
-      if status != gmiText:
+      if status != gmiText and status != gmiVerbatimMarker:
         # if reading same parts, discard
         return
       elif parser.text.len > 0:
