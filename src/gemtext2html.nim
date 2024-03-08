@@ -3,7 +3,7 @@ import streams
 import htmlgen
 import strutils
 
-proc convert(gemtext: string): string =
+proc convert*(gemtext: string): string =
   ## Convert `gemtext` to HTML format and return it.
   var content: seq[string]
   var nextParagraph: seq[string]
