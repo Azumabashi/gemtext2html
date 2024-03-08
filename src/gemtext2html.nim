@@ -2,6 +2,7 @@ import parsegemini
 import streams
 import htmlgen
 import strutils
+import os
 
 proc convert*(gemtext: string): string =
   ## Convert `gemtext` to HTML format and return it.
@@ -109,27 +110,7 @@ proc convertFromFile*(path: string): string =
   path.readFile.convert
 
 when isMainModule:
-  const text = """
-# This is text
-## subtext
-Hello!
-=> https://example.com
-=> https://example.com example
-
-another
-text
-
-new paragraph
-
-## subtext
-### subsubtext
-aaa
-## subtext
-bbb
-```foo
-f x y = x + y
-```
-
-End!
-"""
-  echo convert(text)
+  if paramCount() == 0:
+    echo "Specify gemtext path."
+    quit(1)
+  echo commandLineParams()[0].convertFromFile
