@@ -105,6 +105,9 @@ proc convert*(gemtext: string): string =
   # wrap with `html` and `body`
   return html(body(content.join("\n")))
 
+proc convertFromFile*(path: string): string =
+  path.readFile.convert
+
 when isMainModule:
   const text = """
 # This is text
