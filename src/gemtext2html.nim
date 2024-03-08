@@ -27,6 +27,11 @@ proc convert*(gemtext: string): string =
       elif parser.text.len > 0:
         # if reading nonempty `gmiText` lines, discard
         return
+    elif parser.kind == gmiVerbatim and status == gmiVerbatimMarker:
+      # this is the case of beginning of reading preformatted text
+      # there are nothing to do here, so discarded
+      return
+    
     case status
     of gmiEof, gmiHeader1, gmiHeader2, gmiHeader3:
       # cannot reach here
