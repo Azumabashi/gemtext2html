@@ -2,6 +2,4 @@
 !LICENSE
 !README.md
 !gemtext2html.nimble
-!src/**/*.nim
-!tests/**/*.nim
-!tests/**/*.nims
+!*/
