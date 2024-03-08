@@ -3,34 +3,7 @@ import strutils
 
 import gemtext2html
 
-test "check conversion is executed correctly":
-  const gemtext = """
-# This is text
-## subtext
-Hello!
-=> https://example.com
-=> https://example.com example
-
-another
-text
-
-new paragraph
-
-## another subtext
-### subsubtext
-aaa
-## yet another subtext
-bbb
-```foo
-f x y = x + y
-```
-```
-g x = x * x
-```
-
-End!
-"""
-  const expected = """
+const expected = """
 <html>
 <body>
 <h1>This is text</h1>
@@ -62,4 +35,36 @@ another<br>text
 </body>
 </html>
 """
+
+
+test "check conversion is executed correctly":
+  const gemtext = """
+# This is text
+## subtext
+Hello!
+=> https://example.com
+=> https://example.com example
+
+another
+text
+
+new paragraph
+
+## another subtext
+### subsubtext
+aaa
+## yet another subtext
+bbb
+```foo
+f x y = x + y
+```
+```
+g x = x * x
+```
+
+End!
+"""
   check gemtext.convert.replace("\n", "") == expected.replace("\n", "")
+
+test "check conversion is executed correctly from file":
+  check convertFromFile("tests/test1.gmi").replace("\n", "") == expected.replace("\n", "")
