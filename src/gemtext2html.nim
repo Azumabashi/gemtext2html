@@ -3,6 +3,7 @@ import streams
 import htmlgen
 import strutils
 import os
+import options
 
 proc convert*(gemtext: string): string =
   ## Convert `gemtext` to HTML format and return it.
@@ -11,11 +12,13 @@ proc convert*(gemtext: string): string =
   var parser: GeminiParser
   var status: GeminiLineEvent
 
-  proc clearNextParagraphContent(joinKey: string = "<br>"): string =
+  proc clearNextParagraphContent(joinKey: string = "<br>"): Option[string] =
     ## Join `nextParagraph` using `joinKey` and flush it.
+    if nextParagraph.len == 0:
+      return none(string)
     let flushed = nextParagraph.join(joinKey)
     nextParagraph = @[]
-    return flushed
+    return some(flushed)
 
   proc appendNextTag() =
     ## Generate HTML description using `nextParagraph` and `status` (which describes how the elements of `nextParagraph` should be treated as) and push it to `content`.
@@ -38,7 +41,9 @@ proc convert*(gemtext: string): string =
       discard
     of gmiText, gmiLink:
       # wrap with `p` tag
-      content.add(p(clearNextParagraphContent()))
+      let nextContent = clearNextParagraphContent()
+      if nextContent.isSome():
+        content.add(p(nextContent.get()))
     of gmiVerbatimMarker:
       # the alt text is wrapped with `figcaption` if it exists.
       # all of the verbatim text is wrapped with `figure`.
@@ -56,10 +61,14 @@ proc convert*(gemtext: string): string =
       discard
     of gmiListItem:
       # wrap with `ul`
-      content.add(ul(clearNextParagraphContent(joinKey="\n")))
+      let nextContent = clearNextParagraphContent(joinKey="\n")
+      if nextContent.isSome():
+        content.add(ul(nextContent.get()))
     of gmiQuote:
       # wrap with `blockquote`
-      content.add(blockquote(clearNextParagraphContent()))
+      let nextContent = clearNextParagraphContent()
+      if nextContent.isSome():
+        content.add(blockquote(nextContent.get()))
 
   open(parser, newStringStream(gemtext))
   nextParagraph = @[]
